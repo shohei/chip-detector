@@ -1,0 +1,10 @@
+import cv2
+
+image = cv2.imread('chip.png',cv2.CV_8UC1)
+image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 45, 0)
+se = np.ones((7,7), dtype='uint8')
+image_close = cv2.morphologyEx(image, cv2.MORPH_CLOSE, se)
+cnt = cv2.findContours(image_close, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[0]
+mask = np.zeros(image.shape[:2], np.uint8)
+cv2.drawContours(mask, cnt, -1, 255, -1)
+cv2.imshow("Keypoints", mask)
