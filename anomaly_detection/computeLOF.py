@@ -5,8 +5,14 @@ irisdata = datasets.load_iris().data
 xs = irisdata[:,0]
 ys = irisdata[:,2]
 
-def computeLOF(k,coord):
+
+def computeLRD(k,coord):
     pass
+
+def computeLOF(k,coord):
+    LRD = computeLRD(k,coord)
+    sumLRD = 
+    LOF = (1/k)*sumLRD/LRD
 
 
 for i in len(xs):
