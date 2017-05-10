@@ -1,6 +1,8 @@
+#coding:utf-8
 import numpy as np
 from sklearn import datasets
 import matplotlib.pyplot as plt
+import pdb
 
 iris = datasets.load_iris()
 
@@ -17,23 +19,17 @@ for i in range(4):
         cov = s/len(data)
         S[i,j] = cov 
 
-S2 = np.cov(data)
-# print "variance-covariance matrix",S
 T=np.matrix(np.linalg.eig(S)[1])
-D = T.I*S*T
-T2=np.matrix(np.linalg.eig(S2)[1])
-D2 = T2.I*S2*T2
-print np.size(D2)
+T1=T[:,0]
+T2=T[:,1]
 
-pdata = np.zeros((len(data),4))
+p1 = np.zeros((len(data),1))
 for i in range(len(data)):
-    pdata[i,:] = np.dot(T,np.matrix(data[i,:]).T).T
+    p1[i] = np.dot(np.asarray(T1.T),data[i,:])
 
-# print pdata
-x0 = pdata[:,0]
-x1 = pdata[:,1]
-x2 = pdata[:,2]
-x3 = pdata[:,3]
+p2 = np.zeros((len(data),1))
+for i in range(len(data)):
+    p2[i] = np.dot(np.asarray(T2.T),data[i,:])
 
 cs = []
 for l in target:
@@ -46,18 +42,9 @@ for l in target:
 
 s = 30*np.ones((len(data),1))
 
-# plt.subplot(321)
-# plt.scatter(x0,x1,s,cs)
-# plt.subplot(322)
-# plt.scatter(x0,x2,s,cs)
-# plt.subplot(323)
-# plt.scatter(x0,x3,s,cs)
-# plt.subplot(324)
-# plt.scatter(x1,x2,s,cs)
-# plt.subplot(325)
-# plt.scatter(x1,x3,s,cs)
-# plt.subplot(326)
-# plt.scatter(x2,x3,s,cs)
-#
-# plt.show()
-#
+plt.scatter(p1,p2,s,cs)
+plt.xlabel(u'第1主成分p1')
+plt.ylabel(u'第2主成分p2')
+
+plt.show()
+
