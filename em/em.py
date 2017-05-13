@@ -69,6 +69,7 @@ for i in range(len(gamma)):
 
     luck = random.random()
     if (luck<0.3):
+    # if True: # all pass
         gamma[i][0] = 1/10.0 
         gamma[i][1] = 1/10.0 
         gamma[i][2] = 1/10.0 
@@ -179,9 +180,9 @@ for epoch in range(MAX_LOOP):
     L = 0
     for i in range(len(zs)):
         for k in range(K):
-            L = L + zs[i][k]*math.log(pi[k]) + zs[i][k]*(-d/2*math.log(2*math.pi) -1/2.0*math.log(det(S[k])) -1/2.0*(dot(dot(matrix(data[i,k]-mu[k]),inv(S[k])),matrix(data[i,k]-mu[k]).T)))
+            L = L + zs[i][k]*math.log(pi[k]) + zs[i][k]*(-d/2*math.log(2*math.pi) -1/2.0*math.log(det(S[k])) -1/2.0*(dot(dot(matrix(data[i,:]-mu[k]),inv(S[k])),matrix(data[i,:]-mu[k]).T)))
 
-    if(abs(L-L_last)<math.e**-19):
+    if(abs(L-L_last)<math.e**-20):
         print "converged"
         break
     
@@ -204,7 +205,6 @@ plt.title('Initialized sample')
 
 plt.subplot(223)
 plt.scatter(xs,ys,plot_s,makeColor(labels))
-plt.scatter(xs,ys,plot_s,makeColor(labels))
 plt.title('Classification using EM algorithm')
 
 res = np.array(success_array)
@@ -222,6 +222,9 @@ plt.subplot(224)
 plt.plot(ts,Rates,'r-')
 plt.title('Precision')
 
+plt.figure()
+plt.scatter(xs,ys,plot_s,makeColor(target))
+plt.title('original')
 
 plt.show()
 
