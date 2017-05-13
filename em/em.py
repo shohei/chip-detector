@@ -85,11 +85,24 @@ N2 = sum(gamma[:,2]).item()
 mu_0  = 1/N0 * sum([gamma[i,0].item()*data[i,:] for i in range(len(data))])
 mu_1  = 1/N1 * sum([gamma[i,1].item()*data[i,:] for i in range(len(data))])
 mu_2  = 1/N2 * sum([gamma[i,2].item()*data[i,:] for i in range(len(data))])
-mu = matrix([mu_0,mu_1,mu_2])
+mu = np.array([mu_0,mu_1,mu_2])
 
-S_0 =  sum(dot(dot(gamma[:,0],(x_0-mu_0)),(x_0-mu_0).T))/N0
-S_1 =  sum(dot(dot(gamma[:,1],(x_1-mu_1)),(x_1-mu_1).T))/N1
-S_2 =  sum(dot(dot(gamma[:,2],(x_2-mu_2)),(x_2-mu_2).T))/N2
+
+S_0 = np.zeros((d,d))
+for i in range(len(data)):
+    delta = gamma[i,0]*dot(matrix(data[i,:]-mu_0).T,matrix(data[i,:]-mu_0))/N0 
+    S_0 =  S_0 + delta
+
+S_1 = np.zeros((d,d))
+for i in range(len(data)):
+    delta = gamma[i,1]*dot(matrix(data[i,:]-mu_1).T,matrix(data[i,:]-mu_1))/N1 
+    S_1 =  S_1 + delta
+
+S_2 = np.zeros((d,d))
+for i in range(len(data)):
+    delta = gamma[i,2]*dot(matrix(data[i,:]-mu_2).T,matrix(data[i,:]-mu_2))/N2 
+    S_2 =  S_2 + delta
+
 S = [S_0,S_1,S_2]
 
 N = N0+N1+N2
@@ -112,5 +125,5 @@ for i in range(len(zs)):
     for k in range(K):
         L = L + zs[i][k]*math.log(pi[k]) + zs[i][k]*(-d/2*math.log(2*math.pi)- 1/2.0*math.log(det(S[k])) - 1/2.0*(dot(dot((x[i,k]-mu[k]).T,inv(S[k])),(x[i,k]-mu[k]))))
 
-
+print L.item()
 
