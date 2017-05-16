@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn import datasets
+from numpy import matrix as mat
+import math
 
 iris = datasets.load_iris()
 data = iris.data
@@ -8,15 +10,17 @@ target = iris.target
 w = np.zeros(5)
 # w = np.array([100,100,100,100,100])
 
-def pi(w,x):
-    return 
+def pi(wk,w,xi,x):
+    return math.e**(wk*xi) / sum(math.e**(w*x))
 
 def f_w(w):
     f = 0
+
     for i in range(len(data)):
         x = data[i,:]
-        t = target
-        f += + (pi(w,x)-t)*x
+        t = np.array([0,0,0])
+        t[target[i]]=1
+        f +=  (pi(w,x)-t)*x
     return f
 
 def fdash_w(w):
