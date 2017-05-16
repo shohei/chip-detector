@@ -17,7 +17,7 @@ K = 3 # Setosa, Virginica, Versicolor
 
 lmd = 0.01 # 正則化項
 
-eta = 0.05
+eta = 0.5
 beta = 1
 
 def sigmoid(x): # x can be a vector
@@ -67,7 +67,7 @@ def backpropagation(ti):
     for k in range(K):
         delta_k[k] = (ti[k] - ok[k])*softmax_dash(hk[k],hk)
         for j in range(J):
-            d_wkj[k][j] = eta * delta_k[k] * Vj[j] - 2*lmd*wkj[k][j]
+            d_wkj[k][j] = eta * delta_k[k] * Vj[j] - 2*lmd*wkj[k][j] # 正則化項つき
             wkj[k][j] = wkj[k][j] + d_wkj[k][j]
     for j in range(J):
         delta_j[j] = sigmoid_dash(hj[j]) * np.dot(mat(delta_k).T,mat(wkj[:,j]).T)
