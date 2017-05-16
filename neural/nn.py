@@ -15,6 +15,8 @@ I = 4+1 # Sepal width/height, Petal width/height (+ bias)
 J = 4+1 # Arbitrary (+ bias)
 K = 3 # Setosa, Virginica, Versicolor
 
+lmd = 0.01 # 正則化項
+
 eta = 0.05
 beta = 1
 
@@ -35,10 +37,12 @@ wji = np.zeros((J,I))
 def initialize():
     for k in range(K):
         for j in range(J):
-            wkj[k][j]  = random.random() 
+            wkj[k][j]  = 0.1*random.random() 
+            # wkj[k][j]  = 0.0009 
     for j in range(J):
         for i in range(I):
-            wji[j][i]  = random.random() 
+            wji[j][i]  = 0.1*random.random() 
+            # wji[j][i]  = 0.0009 
 initialize()
 
 hj=np.zeros(J)
@@ -63,13 +67,22 @@ def backpropagation(ti):
     for k in range(K):
         delta_k[k] = (ti[k] - ok[k])*softmax_dash(hk[k],hk)
         for j in range(J):
-            d_wkj[k][j] = eta * delta_k[k] * Vj[j]
+            d_wkj[k][j] = eta * delta_k[k] * Vj[j] - 2*lmd*wkj[k][j]
             wkj[k][j] = wkj[k][j] + d_wkj[k][j]
     for j in range(J):
         delta_j[j] = sigmoid_dash(hj[j]) * np.dot(mat(delta_k).T,mat(wkj[:,j]).T)
         for i in range(I):
             d_wji[j][i] = eta * delta_j[j] * xi[i]
             wji[j][i] = wji[j][i] + d_wji[j][i]
+    plt.subplot(221)
+    plt.plot(counter,wkj[0][1],'ro')
+    plt.title('wkj=w01')
+    plt.subplot(222)
+    plt.plot(counter,wkj[0][2],'go')
+    plt.title('wkj=w02')
+    plt.subplot(223)
+    plt.plot(counter,wkj[0][3],'bo')
+    plt.title('wkj=w03')
 
 def makeTarget(t):
     ti=[0,0,0]
@@ -77,16 +90,20 @@ def makeTarget(t):
     return ti
 
 # main routine for neural network
+counter = 0
 for i in range(len(data)):
     xi = np.concatenate((np.array([1]),data[i,:]))
+    # xi = data[i,:]
     forward(xi)
     ti = makeTarget(target[i])
     backpropagation(ti)
+    counter = counter + 1
 
 # Testing result
 labels=[]
 for i in range(len(data)):
     test = np.concatenate((np.array([1]),data[i,:]))
+    # test = data[i,:]
     ok = forward(test)
     print ok
     label = np.where(np.array(ok)==max(ok))[0].tolist()[0]
@@ -107,9 +124,10 @@ xs = data[:,0] # for scatter plot
 ys = data[:,2]
 plot_s = [30 for i in range(len(xs))] #scatter plot point size
 print labels
+plt.subplot(224)
 plt.scatter(xs,ys,plot_s,makeColor(labels))
 plt.title("Classification using neural network")
-# plt.show()
+plt.show()
 
 
 
